@@ -45,7 +45,9 @@ open ~/Applications/Stillpaper.app
 Without `--install` the app lands in `build/` (ignored by git). The build targets the Mac it runs on;
 set `ARCH=x86_64` or `ARCH=arm64` to build for the other one. It stamps the release identity,
 `Version 1.0.0 · build <commit count> (<short commit>)`, shown at the top of the app's menu. A build
-from uncommitted changes carries `-dirty` after the commit.
+from uncommitted changes carries `-dirty` after the commit. A build from a source download, such
+as a release's Source code archive, has no history to count, so it reads build 0 with the commit
+it was cut from.
 
 The app is signed ad hoc on your own Mac, so a build from source opens without a Gatekeeper prompt.
 
@@ -121,10 +123,12 @@ node --test stillpaper.test.mjs
 
 Needs Node 20 or later and nothing installed. Checks that no page address is built into the app,
 that nothing loads until a page is chosen and a first run asks for one, that the motion freeze
-covers both CSS and SVG animation, and that Open at login loads what it writes. It checks that the
-build targets the Mac it runs on and pins the macOS 12 minimum, then compiles the real app twice
-into temp folders: an Intel build, checked for its architecture and minimum, and a native build
-whose stamped identity it checks. The build tests skip where `swiftc` is missing.
+covers both CSS and SVG animation, and that Open at login loads what it writes. It checks that
+`build.sh` is executable, and that the build targets the Mac it runs on and pins the macOS 12
+minimum, then compiles the real app three times into temp folders: an Intel build, checked for
+its architecture and minimum; a native build whose stamped identity it checks; and a build from
+a `git archive` export of the current commit, run as `./build.sh` the way a release download
+would be, which must still name that commit. The build tests skip where `swiftc` is missing.
 
 ## License
 
